@@ -1,5 +1,5 @@
 import type { IconType } from 'react-icons'
-import { IoGridOutline } from 'react-icons/io5'
+import { IoBusinessOutline, IoGridOutline } from 'react-icons/io5'
 
 export interface NavItem {
   label: string
@@ -8,4 +8,7 @@ export interface NavItem {
 }
 
 /** Single source of truth for the sidebar. Feature branches add their links here. */
-export const navItems: NavItem[] = [{ label: 'Dashboard', to: '/dashboard', icon: IoGridOutline }]
+export const navItems: NavItem[] = [
+  { label: 'Dashboard', to: '/dashboard', icon: IoGridOutline },
+  { label: 'Departments', to: '/departments', icon: IoBusinessOutline },
+]
