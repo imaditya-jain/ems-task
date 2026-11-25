@@ -1,6 +1,7 @@
 using EMS.Application.Employees.Dtos;
 using EMS.Application.Employees.Interfaces;
 using EMS.Domain.Entities;
+using EMS.Domain.Enums;
 using EMS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -85,6 +86,16 @@ public class EmployeeRepository(AppDbContext context) : IEmployeeRepository
         var found = await context.Employees.Where(e => list.Contains(e.Email))
             .Select(e => e.Email).ToListAsync(ct);
         return new HashSet<string>(found, StringComparer.OrdinalIgnoreCase);
+    }
+
+    public Task<List<Employee>> GetActiveOptionsAsync(string? search, CancellationToken ct = default)
+    {
+        var query = context.Employees.AsNoTracking().Where(e => e.Status == EmployeeStatus.Active);
+
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(e => e.FirstName.Contains(search) || e.LastName.Contains(search) || e.EmployeeCode.Contains(search));
+
+        return query.OrderBy(e => e.FirstName).ThenBy(e => e.LastName).ThenBy(e => e.Id).ToListAsync(ct);
     }
 
     public Task<bool> AnyInDepartmentAsync(int departmentId, CancellationToken ct = default) =>

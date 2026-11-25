@@ -1,4 +1,6 @@
+using EMS.Application.Common;
 using EMS.Application.Common.Exceptions;
+using EMS.Application.Performance;
 using EMS.Application.Reports.Interfaces;
 using EMS.Application.Reports.Models;
 using EMS.Domain.Enums;
@@ -132,6 +134,50 @@ public class ReportService(
         return Render(document, "salary", query.Format);
     }
 
+    public async Task<ReportFile> PerformanceAsync(ReportQuery query, CancellationToken ct = default)
+    {
+        if (query.Quarter is < 1 or > 4) throw new BadRequestException("Quarter must be between 1 and 4.");
+
+        var rows = await reports.GetPerformanceRowsAsync(query.Year, query.Quarter, query.DepartmentId, ct);
+        var scored = rows.Select(r => (Row: r, Overall: PerformanceRating.Overall(r.Quality, r.Productivity, r.Teamwork))).ToList();
+
+        var period = (query.Year, query.Quarter) switch
+        {
+            (null, null) => "All periods",
+            (int y, null) => $"Year {y}",
+            (null, int q) => $"Q{q} (all years)",
+            (int y, int q) => $"{y} Q{q}"
+        };
+
+        var summary = new List<ReportSummaryItem>
+        {
+            new("Reviews", scored.Count),
+            new("Average overall rating", scored.Count == 0 ? 0m : Math.Round(scored.Average(s => s.Overall), 2)),
+            new("Highest rating", scored.Count == 0 ? 0m : scored.Max(s => s.Overall)),
+            new("Lowest rating", scored.Count == 0 ? 0m : scored.Min(s => s.Overall))
+        };
+
+        foreach (var department in scored.GroupBy(s => s.Row.DepartmentName).OrderBy(g => g.Key))
+            summary.Add(new($"Average - {department.Key}", Math.Round(department.Average(s => s.Overall), 2)));
+
+        var document = new ReportDocument(
+            "Performance Metrics Report",
+            period + (query.DepartmentId is null ? "" : " · filtered by department"),
+            [
+                new("Code"), new("Name"), new("Department"), new("Period"),
+                new("Quality", ColumnAlign.Right), new("Productivity", ColumnAlign.Right), new("Teamwork", ColumnAlign.Right),
+                new("Overall", ColumnAlign.Right), new("Rating")
+            ],
+            scored.Select(s => new object?[]
+            {
+                s.Row.EmployeeCode, s.Row.FullName, s.Row.DepartmentName, $"{s.Row.Year} Q{s.Row.Quarter}",
+                s.Row.Quality, s.Row.Productivity, s.Row.Teamwork, s.Overall, PerformanceRating.Label(s.Overall)
+            }).ToList(),
+            summary);
+
+        return Render(document, "performance", query.Format);
+    }
+
     private ReportFile Render(ReportDocument document, string baseName, ReportFormat format)
     {
         var stamp = DateTime.UtcNow.ToString("yyyy-MM-dd");
@@ -152,10 +198,7 @@ public class ReportService(
 
     private static Percent? AttendanceRate(AttendanceTotalsRow r)
     {
-        var markedExcludingLeave = r.Present + r.Late + r.HalfDay + r.Absent;
-        if (markedExcludingLeave == 0) return null;
-
-        var attended = r.Present + r.Late + 0.5m * r.HalfDay;
-        return new Percent(Math.Round(attended / markedExcludingLeave, 4));
+        var rate = AttendanceMath.Rate(r.Present, r.Late, r.HalfDay, r.Absent);
+        return rate is null ? null : new Percent(rate.Value);
     }
 }

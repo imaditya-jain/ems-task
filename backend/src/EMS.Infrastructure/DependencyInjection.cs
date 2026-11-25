@@ -1,5 +1,7 @@
 using EMS.Application.Auth.Interfaces;
+using EMS.Application.Analytics.Interfaces;
 using EMS.Application.Attendance.Interfaces;
+using EMS.Application.Performance.Interfaces;
 using EMS.Application.Reports.Interfaces;
 using EMS.Application.Auth.Settings;
 using EMS.Application.Departments.Interfaces;
@@ -39,6 +41,8 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IAttendanceRepository, AttendanceRepository>();
         services.AddScoped<IReportRepository, ReportRepository>();
+        services.AddScoped<IPerformanceRepository, PerformanceRepository>();
+        services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
         services.AddSingleton<IPdfReportGenerator, PdfReportGenerator>();
         services.AddSingleton<IExcelReportGenerator, ExcelReportGenerator>();
         services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();

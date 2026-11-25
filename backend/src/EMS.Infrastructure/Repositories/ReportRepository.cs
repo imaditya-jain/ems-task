@@ -34,6 +34,36 @@ public class ReportRepository(AppDbContext context) : IReportRepository
                 context.Employees.Where(e => e.DepartmentId == d.Id).Sum(e => (decimal?)e.Salary) ?? 0))
             .ToListAsync(ct);
 
+    public async Task<List<PerformanceReportRow>> GetPerformanceRowsAsync(int? year, int? quarter, int? departmentId, CancellationToken ct = default)
+    {
+        var reviews = context.PerformanceReviews.AsNoTracking().AsQueryable();
+
+        if (year is not null) reviews = reviews.Where(r => r.Year == year);
+        if (quarter is not null) reviews = reviews.Where(r => r.Quarter == quarter);
+        if (departmentId is not null) reviews = reviews.Where(r => r.Employee.DepartmentId == departmentId);
+
+        var rows = await reviews
+            .OrderBy(r => r.Employee.Department.Name).ThenByDescending(r => r.Year).ThenByDescending(r => r.Quarter)
+            .ThenBy(r => r.Employee.FirstName).ThenBy(r => r.Id)
+            .Select(r => new
+            {
+                r.Employee.EmployeeCode,
+                r.Employee.FirstName,
+                r.Employee.LastName,
+                DepartmentName = r.Employee.Department.Name,
+                r.Year,
+                r.Quarter,
+                r.QualityScore,
+                r.ProductivityScore,
+                r.TeamworkScore
+            })
+            .ToListAsync(ct);
+
+        return rows.Select(r => new PerformanceReportRow(
+            r.EmployeeCode, $"{r.FirstName} {r.LastName}", r.DepartmentName, r.Year, r.Quarter,
+            r.QualityScore, r.ProductivityScore, r.TeamworkScore)).ToList();
+    }
+
     public async Task<List<AttendanceTotalsRow>> GetAttendanceTotalsAsync(DateOnly from, DateOnly to, int? departmentId, CancellationToken ct = default)
     {
         var employees = context.Employees.AsNoTracking()

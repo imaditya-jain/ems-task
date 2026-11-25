@@ -15,6 +15,11 @@ public class EmployeesController(IEmployeeService employeeService) : ControllerB
     public async Task<IActionResult> GetAll([FromQuery] EmployeeQuery query, CancellationToken ct) =>
         Ok(ApiResponse<PagedResult<EmployeeDto>>.Ok(await employeeService.GetPagedAsync(query, ct)));
 
+    /// <summary>Id/code/name of every active employee, for dropdowns.</summary>
+    [HttpGet("options")]
+    public async Task<IActionResult> Options([FromQuery] string? search, CancellationToken ct) =>
+        Ok(ApiResponse<object>.Ok(new { employees = await employeeService.GetOptionsAsync(search, ct) }));
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id, CancellationToken ct) =>
         Ok(ApiResponse<object>.Ok(new { employee = await employeeService.GetByIdAsync(id, ct) }));

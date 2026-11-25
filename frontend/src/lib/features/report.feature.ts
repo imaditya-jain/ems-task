@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { authFetch } from '@/lib/auth-fetch'
 import type { EmployeeStatus, RejectError } from '@/types'
 
-export type ReportType = 'employee-directory' | 'departments' | 'attendance' | 'salary'
+export type ReportType = 'employee-directory' | 'departments' | 'attendance' | 'salary' | 'performance'
 export type ReportFormat = 'pdf' | 'excel'
 
 export interface DownloadReportParams {
@@ -12,6 +12,8 @@ export interface DownloadReportParams {
   status?: EmployeeStatus
   from?: string
   to?: string
+  year?: number
+  quarter?: number
 }
 
 const fileNameFromHeader = (header: string | null, fallback: string) => {
@@ -36,13 +38,15 @@ const saveBlob = (blob: Blob, fileName: string) => {
  */
 export const downloadReportHandler = createAsyncThunk<string, DownloadReportParams, { rejectValue: RejectError }>(
   'reports/download',
-  async ({ report, format, departmentId, status, from, to }, { rejectWithValue }) => {
+  async ({ report, format, departmentId, status, from, to, year, quarter }, { rejectWithValue }) => {
     try {
       const query = new URLSearchParams({ format })
       if (departmentId) query.set('departmentId', String(departmentId))
       if (status) query.set('status', status)
       if (from) query.set('from', from)
       if (to) query.set('to', to)
+      if (year) query.set('year', String(year))
+      if (quarter) query.set('quarter', String(quarter))
 
       const response = await authFetch(`/api/v1/reports/${report}?${query.toString()}`)
 

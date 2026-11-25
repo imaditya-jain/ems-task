@@ -23,6 +23,8 @@ public class ReportQuery
     public EmployeeStatus? Status { get; set; }
     public DateOnly? From { get; set; }
     public DateOnly? To { get; set; }
+    public int? Year { get; set; }
+    public int? Quarter { get; set; }
 }
 
 // Typed cell values: renderers format them (PDF text) or store them natively (Excel numbers/dates/percentages).
@@ -50,3 +52,7 @@ public record DepartmentStatsRow(string Name, string? Description, int Total, in
 public record AttendanceTotalsRow(
     string EmployeeCode, string FullName, string DepartmentName,
     int Present, int Late, int HalfDay, int Leave, int Absent);
+
+public record PerformanceReportRow(
+    string EmployeeCode, string FullName, string DepartmentName, int Year, int Quarter,
+    int Quality, int Productivity, int Teamwork);

@@ -107,3 +107,6 @@ public record EmployeeDto(
     decimal Salary,
     string Status,
     DateTime CreatedAt);
+
+/// <summary>Minimal employee info for dropdowns.</summary>
+public record EmployeeOptionDto(int Id, string EmployeeCode, string FullName);

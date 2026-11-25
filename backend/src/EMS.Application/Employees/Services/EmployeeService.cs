@@ -22,6 +22,12 @@ public class EmployeeService(IEmployeeRepository employees, IDepartmentRepositor
         return new PagedResult<EmployeeDto>(items.Select(ToDto).ToList(), query.Page, query.PageSize, total);
     }
 
+    public async Task<List<EmployeeOptionDto>> GetOptionsAsync(string? search, CancellationToken ct = default)
+    {
+        var items = await employees.GetActiveOptionsAsync(search?.Trim(), ct);
+        return items.Select(e => new EmployeeOptionDto(e.Id, e.EmployeeCode, $"{e.FirstName} {e.LastName}")).ToList();
+    }
+
     public async Task<EmployeeDto> GetByIdAsync(int id, CancellationToken ct = default) =>
         ToDto(await FindOrThrowAsync(id, ct));
 
