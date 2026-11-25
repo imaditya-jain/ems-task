@@ -78,18 +78,18 @@ public class PerformanceService(IPerformanceRepository reviews, IEmployeeReposit
             BuildSummary(scoped),
             BuildDistribution(scoped),
             scoped.GroupBy(r => r.DepartmentName)
-                .Select(g => new DepartmentPerformanceDto(g.Key, g.Count(), Average(g.Select(r => r.Overall))))
+                .Select(g => new DepartmentPerformanceDto(g.Key, g.Count(), Average(g.Select(r => r.ExactOverall))))
                 .OrderByDescending(d => d.AverageOverall).ThenBy(d => d.Department).ToList(),
             scoped.OrderByDescending(r => r.Overall).ThenBy(r => r.EmployeeName).Take(ListSize).Select(ToPerformer).ToList(),
             scoped.Where(r => r.Overall < 3m).OrderBy(r => r.Overall).ThenBy(r => r.EmployeeName).Take(ListSize).Select(ToPerformer).ToList(),
             all.GroupBy(r => (r.Year, r.Quarter)).OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Quarter)
-                .Select(g => new PerformanceTrendPointDto($"{g.Key.Year} Q{g.Key.Quarter}", Average(g.Select(r => r.Overall)), g.Count()))
+                .Select(g => new PerformanceTrendPointDto($"{g.Key.Year} Q{g.Key.Quarter}", Average(g.Select(r => r.ExactOverall)), g.Count()))
                 .ToList());
     }
 
     private static PerformanceSummaryDto BuildSummary(List<PerformanceScoreRow> rows) =>
         new(rows.Count,
-            Average(rows.Select(r => r.Overall)),
+            Average(rows.Select(r => r.ExactOverall)),
             Average(rows.Select(r => (decimal)r.Quality)),
             Average(rows.Select(r => (decimal)r.Productivity)),
             Average(rows.Select(r => (decimal)r.Teamwork)));
