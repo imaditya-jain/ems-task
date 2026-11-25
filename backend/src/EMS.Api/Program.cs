@@ -3,8 +3,15 @@ using EMS.Api.Middleware;
 using EMS.Application;
 using EMS.Infrastructure;
 using EMS.Infrastructure.Persistence;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Behind a reverse proxy (Nginx terminating TLS) the API only sees plain HTTP. Reading X-Forwarded-* lets
+// Request.IsHttps (used for the Secure cookie flag) and the client IP (used by the login rate limiter) be correct.
+// By default only proxies on the same machine (loopback) are trusted; add KnownProxies/KnownNetworks for others.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
 
 builder.Services.AddApiControllers();
 builder.Services.AddOpenApi();
@@ -30,6 +37,7 @@ var app = builder.Build();
 // In production, migrations are applied explicitly with `dotnet ef database update`.
 await DbInitializer.InitializeAsync(app.Services, applyMigrations: app.Environment.IsDevelopment());
 
+app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
