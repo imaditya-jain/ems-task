@@ -1,6 +1,8 @@
 using EMS.Application.Attendance.Interfaces;
 using EMS.Application.Attendance.Services;
 using EMS.Application.Auth.Interfaces;
+using EMS.Application.Reports.Interfaces;
+using EMS.Application.Reports.Services;
 using EMS.Application.Auth.Services;
 using EMS.Application.Departments.Interfaces;
 using EMS.Application.Departments.Services;
@@ -18,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IAttendanceService, AttendanceService>();
+        services.AddScoped<IReportService, ReportService>();
         return services;
     }
 }
