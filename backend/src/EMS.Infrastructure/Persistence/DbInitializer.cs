@@ -11,7 +11,7 @@ namespace EMS.Infrastructure.Persistence;
 public static class DbInitializer
 {
     /// <summary>Applies pending migrations (development convenience) and creates the first admin if none exists.</summary>
-    public static async Task InitializeAsync(IServiceProvider services, bool applyMigrations)
+    public static async Task InitializeAsync(IServiceProvider services, bool applyMigrations, bool allowDemoData = false)
     {
         using var scope = services.CreateScope();
         var provider = scope.ServiceProvider;
@@ -21,9 +21,24 @@ public static class DbInitializer
             await provider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
 
         var users = provider.GetRequiredService<IUserRepository>();
-        if (await users.AnyAsync()) return;
-
         var config = provider.GetRequiredService<IConfiguration>();
+
+        if (!await users.AnyAsync()) await SeedAdminAsync(provider, users, config, logger);
+
+        if (config.GetValue<bool>("Seed:DemoData"))
+        {
+            if (!allowDemoData)
+                logger.LogWarning("Seed:DemoData is ignored in Production.");
+            else
+                await DemoDataSeeder.SeedAsync(
+                    provider.GetRequiredService<AppDbContext>(),
+                    provider.GetRequiredService<IPasswordHasher>(),
+                    logger);
+        }
+    }
+
+    private static async Task SeedAdminAsync(IServiceProvider provider, IUserRepository users, IConfiguration config, ILogger logger)
+    {
         var email = config["Seed:AdminEmail"];
         var password = config["Seed:AdminPassword"];
 
@@ -36,7 +51,7 @@ public static class DbInitializer
         var hasher = provider.GetRequiredService<IPasswordHasher>();
         await users.AddAsync(new User
         {
-            FullName = "System Admin",
+            FullName = config["Seed:AdminName"] is { Length: > 0 } name ? name.Trim() : "System Admin",
             Email = email.Trim().ToLowerInvariant(),
             PasswordHash = hasher.Hash(password),
             Role = UserRole.Admin

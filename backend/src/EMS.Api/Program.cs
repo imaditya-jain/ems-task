@@ -18,7 +18,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddCookieJwtAuthentication();
-builder.Services.AddLoginRateLimiter();
+builder.Services.AddLoginRateLimiter(Math.Max(builder.Configuration.GetValue("RateLimiting:LoginPermitLimit", 5), 1));
 
 // Frontend talks to the API with httpOnly cookies, so credentials must be allowed
 // and the origin list must be explicit (no wildcard).
@@ -35,7 +35,11 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // In production, migrations are applied explicitly with `dotnet ef database update`.
-await DbInitializer.InitializeAsync(app.Services, applyMigrations: app.Environment.IsDevelopment());
+// Demo data is for development and automated tests only: the flag is ignored in Production.
+await DbInitializer.InitializeAsync(
+    app.Services,
+    applyMigrations: app.Environment.IsDevelopment(),
+    allowDemoData: !app.Environment.IsProduction());
 
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionHandlingMiddleware>();

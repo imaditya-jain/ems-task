@@ -1,0 +1,26 @@
+# MySQL for the end-to-end tests.
+#
+# The data lives in a NAMED VOLUME, so the dummy data seeded on the first run (and everything the tests create
+# afterwards) is kept between runs and across restarts. Nothing here deletes it:
+#   npm run db:up     start (creates the volume on first use)
+#   npm run db:stop   stop, data is kept
+# To start completely fresh you must explicitly run:  docker compose down -v
+services:
+  mysql-e2e:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: e2e_root_password
+      MYSQL_DATABASE: ems_e2e
+    ports:
+      - "3308:3306"
+    volumes:
+      - ems_e2e_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-pe2e_root_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  ems_e2e_data:
