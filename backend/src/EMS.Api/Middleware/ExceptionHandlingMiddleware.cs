@@ -18,7 +18,8 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         }
         catch (AppException ex)
         {
-            await WriteErrorAsync(context, ex.StatusCode, ex.Message);
+            var errors = (ex as UnprocessableException)?.Errors;
+            await WriteErrorAsync(context, ex.StatusCode, ex.Message, errors);
         }
         catch (Exception ex)
         {
@@ -27,13 +28,13 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         }
     }
 
-    private static Task WriteErrorAsync(HttpContext context, int statusCode, string message)
+    private static Task WriteErrorAsync(HttpContext context, int statusCode, string message, IReadOnlyList<string>? errors = null)
     {
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
 
         return context.Response.WriteAsync(JsonSerializer.Serialize(
-            ApiResponse.Fail(message),
+            ApiResponse.Fail(message, errors),
             new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
     }
 }

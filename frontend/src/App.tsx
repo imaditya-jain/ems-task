@@ -9,6 +9,9 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import LoginPage from '@/pages/LoginPage'
 import DashboardPage from '@/pages/DashboardPage'
 import DepartmentsPage from '@/pages/DepartmentsPage'
+import EmployeesPage from '@/pages/EmployeesPage'
+import EmployeeFormPage from '@/pages/EmployeeFormPage'
+import EmployeeDetailPage from '@/pages/EmployeeDetailPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 const App = () => (
@@ -23,6 +26,10 @@ const App = () => (
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/employees" element={<EmployeesPage />} />
+              <Route path="/employees/new" element={<EmployeeFormPage />} />
+              <Route path="/employees/:id" element={<EmployeeDetailPage />} />
+              <Route path="/employees/:id/edit" element={<EmployeeFormPage />} />
               <Route path="/departments" element={<DepartmentsPage />} />
             </Route>
           </Route>

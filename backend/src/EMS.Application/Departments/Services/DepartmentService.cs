@@ -1,11 +1,12 @@
 using EMS.Application.Common.Exceptions;
 using EMS.Application.Departments.Dtos;
 using EMS.Application.Departments.Interfaces;
+using EMS.Application.Employees.Interfaces;
 using EMS.Domain.Entities;
 
 namespace EMS.Application.Departments.Services;
 
-public class DepartmentService(IDepartmentRepository departments) : IDepartmentService
+public class DepartmentService(IDepartmentRepository departments, IEmployeeRepository employees) : IDepartmentService
 {
     public async Task<List<DepartmentDto>> GetAllAsync(string? search, CancellationToken ct = default)
     {
@@ -44,6 +45,10 @@ public class DepartmentService(IDepartmentRepository departments) : IDepartmentS
     public async Task DeleteAsync(int id, CancellationToken ct = default)
     {
         var department = await FindOrThrowAsync(id, ct);
+
+        if (await employees.AnyInDepartmentAsync(id, ct))
+            throw new ConflictException("This department still has employees. Move or remove them before deleting it.");
+
         departments.Remove(department);
         await departments.SaveChangesAsync(ct);
     }

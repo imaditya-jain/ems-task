@@ -1,7 +1,24 @@
 import { authFetch } from '@/lib/auth-fetch'
-import type { ApiResponse } from '@/types'
+import type { ApiResponse, RejectError } from '@/types'
 
 const API_BASE = '/api/v1'
+
+/** Error thrown for non-2xx responses; `errors` holds per-row messages (e.g. bulk import). */
+export class ApiError extends Error {
+  errors?: string[]
+
+  constructor(message: string, errors?: string[]) {
+    super(message)
+    this.errors = errors
+  }
+}
+
+/** Converts anything thrown inside a thunk into the payload used by rejectWithValue. */
+export const toRejectError = (error: unknown): RejectError => ({
+  success: false,
+  error: error instanceof Error ? error.message : 'Something went wrong.',
+  errors: error instanceof ApiError ? error.errors : undefined,
+})
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -26,7 +43,7 @@ export const apiRequest = async <T = unknown>(path: string, options: RequestOpti
   const result: ApiResponse<T> = await response.json().catch(() => ({ success: false }))
 
   if (!response.ok) {
-    throw new Error(result.error || 'Something went wrong.')
+    throw new ApiError(result.error || 'Something went wrong.', result.errors)
   }
 
   return result

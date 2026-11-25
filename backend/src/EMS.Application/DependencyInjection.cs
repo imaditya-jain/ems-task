@@ -2,6 +2,8 @@ using EMS.Application.Auth.Interfaces;
 using EMS.Application.Auth.Services;
 using EMS.Application.Departments.Interfaces;
 using EMS.Application.Departments.Services;
+using EMS.Application.Employees.Interfaces;
+using EMS.Application.Employees.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EMS.Application;
@@ -12,6 +14,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<IEmployeeService, EmployeeService>();
         return services;
     }
 }

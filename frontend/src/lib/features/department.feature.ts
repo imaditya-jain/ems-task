@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { apiRequest } from '@/lib/api'
+import { apiRequest, toRejectError } from '@/lib/api'
 import type { ApiResponse, Department, RejectError } from '@/types'
 
 export interface DepartmentPayload {
@@ -9,11 +9,6 @@ export interface DepartmentPayload {
 
 type ListResponse = ApiResponse<{ departments: Department[] }>
 type ItemResponse = ApiResponse<{ department: Department }>
-
-const toRejectError = (error: unknown): RejectError => ({
-  success: false,
-  error: error instanceof Error ? error.message : 'Something went wrong.',
-})
 
 export const fetchDepartmentsHandler = createAsyncThunk<ListResponse, string | undefined, { rejectValue: RejectError }>(
   'departments/fetch-all',
