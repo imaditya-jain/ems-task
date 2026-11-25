@@ -33,7 +33,11 @@ const schema = yup.object({
       limit.setFullYear(limit.getFullYear() - MIN_AGE)
       return value <= isoDate(limit)
     }),
-  gender: yup.string().oneOf(['Male', 'Female', 'Other'], 'Select a gender').required('Gender is required'),
+  // A normal test() (not oneOf): yup runs oneOf before required, which would hide the "required" message.
+  gender: yup
+    .string()
+    .required('Gender is required')
+    .test('valid-gender', 'Select a gender', (value) => ['Male', 'Female', 'Other'].includes(value)),
   departmentId: yup.number().typeError('Select a department').min(1, 'Select a department').required('Department is required'),
   designation: yup.string().trim().max(100, 'Max 100 characters').required('Designation is required'),
   joiningDate: yup.string().required('Joining date is required'),

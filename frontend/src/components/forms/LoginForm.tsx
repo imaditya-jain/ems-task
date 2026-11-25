@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks'
 
 const schema = yup.object({
   email: yup.string().trim().email('Enter a valid email address').required('Email is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
 })
 
 type LoginFormValues = yup.InferType<typeof schema>

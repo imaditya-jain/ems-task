@@ -7,7 +7,7 @@ import type { DepartmentPayload } from '@/lib/features/department.feature'
 import type { Department } from '@/types'
 
 const schema = yup.object({
-  name: yup.string().trim().min(2, 'Name must be at least 2 characters').max(100, 'Name cannot exceed 100 characters').required('Department name is required'),
+  name: yup.string().trim().required('Department name is required').min(2, 'Name must be at least 2 characters').max(100, 'Name cannot exceed 100 characters'),
   description: yup.string().trim().max(255, 'Description cannot exceed 255 characters').default(''),
 })
 
