@@ -19,6 +19,43 @@ namespace EMS.Infrastructure.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("EMS.Domain.Entities.Attendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Date");
+
+                    b.HasIndex("EmployeeId", "Date")
+                        .IsUnique();
+
+                    b.ToTable("attendances", (string)null);
+                });
+
             modelBuilder.Entity("EMS.Domain.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -175,6 +212,17 @@ namespace EMS.Infrastructure.Persistence.Migrations
                     b.ToTable("users", (string)null);
                 });
 
+            modelBuilder.Entity("EMS.Domain.Entities.Attendance", b =>
+                {
+                    b.HasOne("EMS.Domain.Entities.Employee", "Employee")
+                        .WithMany("Attendances")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("EMS.Domain.Entities.Employee", b =>
                 {
                     b.HasOne("EMS.Domain.Entities.Department", "Department")
@@ -184,6 +232,11 @@ namespace EMS.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("EMS.Domain.Entities.Employee", b =>
+                {
+                    b.Navigation("Attendances");
                 });
 #pragma warning restore 612, 618
         }

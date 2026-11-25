@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users => Set<User>();
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<Attendance> Attendances => Set<Attendance>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

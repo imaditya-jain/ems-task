@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import authReducer, { sessionExpired } from '@/lib/slices/auth.slice'
 import departmentReducer from '@/lib/slices/department.slice'
 import employeeReducer from '@/lib/slices/employee.slice'
+import attendanceReducer from '@/lib/slices/attendance.slice'
 import { setSessionExpiredHandler } from '@/lib/auth-fetch'
 
 export const makeStore = () => {
@@ -10,6 +11,7 @@ export const makeStore = () => {
       auth: authReducer,
       department: departmentReducer,
       employee: employeeReducer,
+      attendance: attendanceReducer,
     },
   })
 

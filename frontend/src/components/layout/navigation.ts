@@ -1,5 +1,5 @@
 import type { IconType } from 'react-icons'
-import { IoBusinessOutline, IoGridOutline, IoPeopleOutline } from 'react-icons/io5'
+import { IoBusinessOutline, IoCalendarOutline, IoGridOutline, IoPeopleOutline } from 'react-icons/io5'
 
 export interface NavItem {
   label: string
@@ -11,5 +11,6 @@ export interface NavItem {
 export const navItems: NavItem[] = [
   { label: 'Dashboard', to: '/dashboard', icon: IoGridOutline },
   { label: 'Employees', to: '/employees', icon: IoPeopleOutline },
+  { label: 'Attendance', to: '/attendance', icon: IoCalendarOutline },
   { label: 'Departments', to: '/departments', icon: IoBusinessOutline },
 ]

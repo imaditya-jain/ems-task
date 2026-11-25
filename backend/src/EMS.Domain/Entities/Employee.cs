@@ -22,4 +22,6 @@ public class Employee : BaseEntity
 
     public int DepartmentId { get; set; }
     public Department Department { get; set; } = null!;
+
+    public ICollection<Attendance> Attendances { get; set; } = [];
 }
