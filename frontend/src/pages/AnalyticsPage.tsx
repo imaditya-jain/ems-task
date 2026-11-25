@@ -74,7 +74,7 @@ const AnalyticsPage = () => {
     <button
       type="button"
       onClick={() => setTab(value)}
-      className={clsx('rounded-lg px-4 py-2 text-sm font-medium transition', tab === value ? 'bg-primary text-white' : 'text-muted hover:bg-page hover:text-foreground')}
+      className={clsx('rounded-lg px-4 py-2 text-sm font-medium transition', tab === value ? 'bg-primary text-on-primary' : 'text-muted hover:bg-page hover:text-foreground')}
     >
       {label}
     </button>

@@ -45,7 +45,7 @@ const LoginForm = () => {
       <button
         type="submit"
         disabled={loading}
-        className="h-11 w-full rounded-lg bg-primary text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-11 w-full rounded-lg bg-primary text-sm font-semibold text-on-primary transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? 'Signing in...' : 'Sign In'}
       </button>

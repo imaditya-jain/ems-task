@@ -1,14 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-import type { AttendancePatterns, DepartmentGrowth, HiringTrend, Overview } from '@/types'
+import type { AttendancePatterns, DepartmentGrowth, HiringTrend } from '@/types'
 import {
   fetchAttendancePatternsHandler,
   fetchDepartmentGrowthHandler,
   fetchHiringTrendHandler,
-  fetchOverviewHandler,
 } from '@/lib/features/analytics.feature'
 
 interface AnalyticsState {
-  overview: Overview | null
   hiringTrend: HiringTrend | null
   departmentGrowth: DepartmentGrowth | null
   attendancePatterns: AttendancePatterns | null
@@ -17,7 +15,6 @@ interface AnalyticsState {
 }
 
 const initialState: AnalyticsState = {
-  overview: null,
   hiringTrend: null,
   departmentGrowth: null,
   attendancePatterns: null,
@@ -31,9 +28,6 @@ const analyticsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchOverviewHandler.fulfilled, (state, action) => {
-        state.overview = action.payload.data ?? null
-      })
       .addCase(fetchHiringTrendHandler.fulfilled, (state, action) => {
         state.hiringTrend = action.payload.data ?? null
       })

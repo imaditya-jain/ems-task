@@ -1,15 +1,15 @@
 /** One palette for every chart so the app looks consistent. */
 export const chartColors = {
-  primary: '#4f46e5',
-  green: '#16a34a',
-  amber: '#d97706',
-  sky: '#0284c7',
-  violet: '#7c3aed',
-  red: '#dc2626',
-  slate: '#94a3b8',
+  primary: '#2f3e39',
+  green: '#4fae8b',
+  amber: '#e2a23b',
+  sky: '#5aa6d4',
+  violet: '#8d7fd1',
+  red: '#e0675a',
+  slate: '#a3aea8',
 }
 
-export const seriesColors = [chartColors.primary, chartColors.green, chartColors.amber, chartColors.sky, chartColors.violet, chartColors.red, '#0d9488', '#db2777']
+export const seriesColors = [chartColors.primary, chartColors.green, chartColors.amber, chartColors.sky, chartColors.violet, chartColors.red, '#2aa198', '#d6609a']
 
 export const attendanceColors = {
   present: chartColors.green,

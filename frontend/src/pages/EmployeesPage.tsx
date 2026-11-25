@@ -155,7 +155,7 @@ const EmployeesPage = () => {
             <IoCloudUploadOutline className="text-lg" />
             Import CSV
           </button>
-          <Link to="/employees/new" className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-dark">
+          <Link to="/employees/new" className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-on-primary hover:bg-primary-dark">
             <IoAdd className="text-lg" />
             Add Employee
           </Link>

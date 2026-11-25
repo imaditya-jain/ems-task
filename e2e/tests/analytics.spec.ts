@@ -11,33 +11,56 @@ const statValue = async (page: Page, label: string) => {
 }
 
 test.describe('Dashboard', () => {
-  test('shows live headcount, departments, new hires and payroll', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/dashboard')
-
-    await expect(page.getByText('Total employees')).toBeVisible()
-    await expect(page.getByText('Departments', { exact: true }).first()).toBeVisible()
-    await expect(page.getByText('New hires this month')).toBeVisible()
-    await expect(page.getByText('Monthly payroll')).toBeVisible()
-    await expect(page.getByText(/₹[\d,]+\.\d{2}/).first()).toBeVisible()
-    expect(await statValue(page, 'Total employees')).toBeGreaterThanOrEqual(SEED.employeeCount)
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/Good (Morning|Afternoon|Evening)/)
   })
 
-  test("renders today's attendance chart and quick actions", async ({ page }) => {
-    await page.goto('/dashboard')
-
-    await expect(page.getByRole('heading', { name: "Today's attendance" })).toBeVisible()
-    await expect(charts(page).first()).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Add an employee' })).toBeVisible()
+  test('greets the signed-in user by first name and shows the date', async ({ page }) => {
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/,\s*\S+/)
+    await expect(page.getByText(/^[A-Z][a-z]{2}, \d{2} [A-Z][a-z]{2} \d{4}$/)).toBeVisible()
   })
 
-  test('quick actions navigate to the right pages', async ({ page }) => {
-    await page.goto('/dashboard')
+  test('shows the headline numbers', async ({ page }) => {
+    const employees = Number(await page.getByTestId('hero-employees').locator('span').first().innerText())
 
-    await page.getByRole('link', { name: 'Add an employee' }).click()
+    expect(employees).toBeGreaterThanOrEqual(SEED.employeeCount)
+    await expect(page.getByTestId('hero-hires')).toContainText('vs last')
+    await expect(page.getByTestId('hero-rating')).toContainText('reviews')
+  })
+
+  test('renders every widget with real data', async ({ page }) => {
+    for (const title of ['Attendance rate', 'At work today', 'Away today', 'Attendance marked today', 'Employee spotlight', 'Recent hires', 'Workforce by department']) {
+      await expect(page.getByRole('heading', { name: title })).toBeVisible()
+    }
+    await expect(page.getByRole('img', { name: /Daily attendance rate/ })).toBeVisible()
+    await expect(page.getByText(/Monthly payroll \(active employees\): ₹[\d,]+\.\d{2}/)).toBeVisible()
+    expect(await page.locator('table tbody tr').count()).toBeGreaterThanOrEqual(1)
+  })
+
+  test('the spotlight shows the top-rated employee', async ({ page }) => {
+    await expect(page.getByText(/Top performer · /)).toBeVisible()
+    await expect(page.getByText(/\d\.\d{2} rating/)).toBeVisible()
+  })
+
+  test('the top actions and widget arrows navigate to the right pages', async ({ page }) => {
+    await page.getByRole('link', { name: 'Add employee' }).click()
     await expect(page).toHaveURL(/\/employees\/new/)
+
     await page.goBack()
-    await page.getByRole('link', { name: 'Download reports' }).click()
+    await page.getByRole('link', { name: 'Download report' }).click()
     await expect(page).toHaveURL(/\/reports/)
+
+    await page.goBack()
+    await page.getByRole('link', { name: 'Open Attendance marked today' }).click()
+    await expect(page).toHaveURL(/\/attendance/)
+  })
+
+  test('recent hires link to the employee detail page', async ({ page }) => {
+    await page.locator('table tbody tr a').first().click()
+
+    await expect(page).toHaveURL(/\/employees\/\d+$/)
+    await expect(page.getByRole('heading', { name: 'Attendance', exact: true })).toBeVisible() // exact: waits for the lazy-loaded detail page
   })
 })
 

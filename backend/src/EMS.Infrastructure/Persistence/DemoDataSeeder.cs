@@ -94,14 +94,15 @@ public static class DemoDataSeeder
         context.Employees.AddRange(employees);
         await context.SaveChangesAsync(ct);
 
-        // Attendance: the last 60 days (never before the employee joined), weighted towards Present.
+        // Attendance: today and the last 60 days (never before the employee joined), weighted towards Present.
+        // Today is included so the dashboard's "today" widgets are never empty.
         var statuses = new[] { AttendanceStatus.Present, AttendanceStatus.Late, AttendanceStatus.Absent, AttendanceStatus.HalfDay, AttendanceStatus.Leave };
         var weights = new[] { 72, 12, 7, 5, 4 };
 
         var attendance = new List<Attendance>();
         foreach (var employee in employees.Where(e => e.Status == EmployeeStatus.Active))
         {
-            for (var back = 1; back <= AttendanceDays; back++)
+            for (var back = 0; back <= AttendanceDays; back++)
             {
                 var date = today.AddDays(-back);
                 if (date < employee.JoiningDate) continue;

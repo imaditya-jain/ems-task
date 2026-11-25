@@ -116,7 +116,7 @@ const AttendancePage = () => {
             type="button"
             onClick={handleSave}
             disabled={pendingRecords.length === 0 || saving}
-            className="h-10 rounded-lg bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-60"
+            className="h-10 rounded-lg bg-primary px-4 text-sm font-semibold text-on-primary hover:bg-primary-dark disabled:opacity-60"
           >
             {saving ? 'Saving...' : `Save${pendingRecords.length > 0 ? ` (${pendingRecords.length})` : ''}`}
           </button>

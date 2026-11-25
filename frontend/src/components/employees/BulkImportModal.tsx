@@ -139,7 +139,7 @@ const BulkImportModal = ({ onClose, onImported }: BulkImportModalProps) => {
           type="button"
           onClick={handleImport}
           disabled={rows.length === 0 || saving}
-          className="h-10 rounded-lg bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-60"
+          className="h-10 rounded-lg bg-primary px-4 text-sm font-semibold text-on-primary hover:bg-primary-dark disabled:opacity-60"
         >
           {saving ? 'Importing...' : 'Import'}
         </button>

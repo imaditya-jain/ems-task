@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import ThemeSync from '@/providers/ThemeSync'
 import StoreProvider from '@/providers/StoreProvider'
 import AuthSessionProvider from '@/providers/AuthSessionProvider'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
@@ -52,7 +52,7 @@ const App = () => (
           </Routes>
         </Suspense>
       </BrowserRouter>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ThemeSync />
     </AuthSessionProvider>
   </StoreProvider>
 )
