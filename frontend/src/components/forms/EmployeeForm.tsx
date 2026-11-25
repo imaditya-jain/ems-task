@@ -124,7 +124,7 @@ const EmployeeForm = ({ employee, departments, saving, onSubmit, onCancel }: Emp
         <button type="button" onClick={onCancel} className="h-10 rounded-lg border border-border px-4 text-sm font-medium hover:bg-page">
           Cancel
         </button>
-        <button type="submit" disabled={saving} className="h-10 rounded-lg bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-60">
+        <button type="submit" disabled={saving} className="h-10 rounded-lg bg-primary px-4 text-sm font-semibold text-on-primary hover:bg-primary-dark disabled:opacity-60">
           {saving ? 'Saving...' : employee ? 'Update Employee' : 'Create Employee'}
         </button>
       </div>

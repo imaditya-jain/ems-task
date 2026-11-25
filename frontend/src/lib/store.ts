@@ -6,6 +6,8 @@ import attendanceReducer from '@/lib/slices/attendance.slice'
 import reportReducer from '@/lib/slices/report.slice'
 import analyticsReducer from '@/lib/slices/analytics.slice'
 import performanceReducer from '@/lib/slices/performance.slice'
+import dashboardReducer from '@/lib/slices/dashboard.slice'
+import uiReducer from '@/lib/slices/ui.slice'
 import { setSessionExpiredHandler } from '@/lib/auth-fetch'
 
 export const makeStore = () => {
@@ -18,6 +20,8 @@ export const makeStore = () => {
       report: reportReducer,
       analytics: analyticsReducer,
       performance: performanceReducer,
+      dashboard: dashboardReducer,
+      ui: uiReducer,
     },
   })
 

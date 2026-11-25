@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      // Apply the saved (or system) theme before first paint, so there is no flash of the wrong theme.
+      try {
+        var t = localStorage.getItem('ems-theme')
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark')
+        document.documentElement.dataset.themeReady = 'true' // the app reads the page's theme from here
+      } catch (e) {}
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

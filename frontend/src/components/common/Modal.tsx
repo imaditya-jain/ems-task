@@ -21,7 +21,7 @@ const Modal = ({ title, onClose, children }: ModalProps) => {
       className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4"
       onMouseDown={(event) => event.target === event.currentTarget && onClose()}
     >
-      <div role="dialog" aria-modal="true" aria-label={title} className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-surface p-6 shadow-xl">
+      <div role="dialog" aria-modal="true" aria-label={title} className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-surface-solid p-6 shadow-2xl">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">{title}</h2>
           <button type="button" onClick={onClose} aria-label="Close" className="rounded-lg p-1 text-muted hover:bg-page hover:text-foreground">

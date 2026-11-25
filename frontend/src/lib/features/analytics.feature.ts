@@ -1,19 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { apiRequest, toRejectError } from '@/lib/api'
-import type { ApiResponse, AttendancePatterns, DepartmentGrowth, HiringTrend, Overview, RejectError } from '@/types'
+import type { ApiResponse, AttendancePatterns, DepartmentGrowth, HiringTrend, RejectError } from '@/types'
 
 type RejectConfig = { rejectValue: RejectError }
-
-export const fetchOverviewHandler = createAsyncThunk<ApiResponse<Overview>, string, RejectConfig>(
-  'analytics/overview',
-  async (today, { rejectWithValue }) => {
-    try {
-      return await apiRequest<Overview>(`/analytics/overview?today=${today}`)
-    } catch (error) {
-      return rejectWithValue(toRejectError(error))
-    }
-  },
-)
 
 export const fetchHiringTrendHandler = createAsyncThunk<ApiResponse<HiringTrend>, number, RejectConfig>(
   'analytics/hiring-trend',

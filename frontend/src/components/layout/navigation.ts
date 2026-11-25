@@ -1,5 +1,13 @@
 import type { IconType } from 'react-icons'
-import { IoBarChartOutline, IoBusinessOutline, IoRibbonOutline, IoCalendarOutline, IoDocumentTextOutline, IoGridOutline, IoPeopleOutline } from 'react-icons/io5'
+import {
+  IoBarChartOutline,
+  IoBusinessOutline,
+  IoCalendarOutline,
+  IoDocumentTextOutline,
+  IoGridOutline,
+  IoPeopleOutline,
+  IoRibbonOutline,
+} from 'react-icons/io5'
 
 export interface NavItem {
   label: string
@@ -7,7 +15,7 @@ export interface NavItem {
   icon: IconType
 }
 
-/** Single source of truth for the sidebar. Feature branches add their links here. */
+/** Single source of truth for the sidebar. */
 export const navItems: NavItem[] = [
   { label: 'Dashboard', to: '/dashboard', icon: IoGridOutline },
   { label: 'Employees', to: '/employees', icon: IoPeopleOutline },
