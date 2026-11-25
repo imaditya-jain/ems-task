@@ -1,0 +1,21 @@
+{
+  "name": "ems-e2e",
+  "private": true,
+  "version": "1.0.0",
+  "description": "End-to-end and API tests for the Employee Management System (Playwright)",
+  "type": "module",
+  "scripts": {
+    "db:up": "docker compose up -d --wait",
+    "db:stop": "docker compose stop",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.10",
+    "read-excel-file": "^9.3.20",
+    "typescript": "^7.0.2"
+  }
+}

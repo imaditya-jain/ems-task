@@ -1,0 +1,35 @@
+import { configureStore } from '@reduxjs/toolkit'
+import authReducer, { sessionExpired } from '@/lib/slices/auth.slice'
+import departmentReducer from '@/lib/slices/department.slice'
+import employeeReducer from '@/lib/slices/employee.slice'
+import attendanceReducer from '@/lib/slices/attendance.slice'
+import reportReducer from '@/lib/slices/report.slice'
+import analyticsReducer from '@/lib/slices/analytics.slice'
+import performanceReducer from '@/lib/slices/performance.slice'
+import dashboardReducer from '@/lib/slices/dashboard.slice'
+import uiReducer from '@/lib/slices/ui.slice'
+import { setSessionExpiredHandler } from '@/lib/auth-fetch'
+
+export const makeStore = () => {
+  const store = configureStore({
+    reducer: {
+      auth: authReducer,
+      department: departmentReducer,
+      employee: employeeReducer,
+      attendance: attendanceReducer,
+      report: reportReducer,
+      analytics: analyticsReducer,
+      performance: performanceReducer,
+      dashboard: dashboardReducer,
+      ui: uiReducer,
+    },
+  })
+
+  setSessionExpiredHandler(() => store.dispatch(sessionExpired()))
+
+  return store
+}
+
+export type AppStore = ReturnType<typeof makeStore>
+export type RootState = ReturnType<AppStore['getState']>
+export type AppDispatch = AppStore['dispatch']
