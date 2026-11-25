@@ -71,7 +71,11 @@ public record PerformanceScoreRow(
     int EmployeeId, string EmployeeCode, string EmployeeName, string DepartmentName,
     int Year, int Quarter, int Quality, int Productivity, int Teamwork)
 {
+    /// <summary>The rating shown to users (two decimals).</summary>
     public decimal Overall => PerformanceRating.Overall(Quality, Productivity, Teamwork);
+
+    /// <summary>Unrounded rating. Averages are taken over this so rounding errors do not accumulate.</summary>
+    public decimal ExactOverall => (Quality + Productivity + Teamwork) / 3m;
 }
 
 public record PerformanceSummaryDto(int ReviewCount, decimal AverageOverall, decimal AverageQuality, decimal AverageProductivity, decimal AverageTeamwork);
