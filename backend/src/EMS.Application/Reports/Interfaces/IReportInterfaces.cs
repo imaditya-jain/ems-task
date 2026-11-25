@@ -8,6 +8,7 @@ public interface IReportRepository
 {
     Task<List<Employee>> GetEmployeesAsync(int? departmentId, EmployeeStatus? status, CancellationToken ct = default);
     Task<List<DepartmentStatsRow>> GetDepartmentStatsAsync(CancellationToken ct = default);
+    Task<List<PerformanceReportRow>> GetPerformanceRowsAsync(int? year, int? quarter, int? departmentId, CancellationToken ct = default);
     Task<List<AttendanceTotalsRow>> GetAttendanceTotalsAsync(DateOnly from, DateOnly to, int? departmentId, CancellationToken ct = default);
 }
 
@@ -26,5 +27,6 @@ public interface IReportService
     Task<ReportFile> EmployeeDirectoryAsync(ReportQuery query, CancellationToken ct = default);
     Task<ReportFile> DepartmentsAsync(ReportQuery query, CancellationToken ct = default);
     Task<ReportFile> AttendanceAsync(ReportQuery query, CancellationToken ct = default);
+    Task<ReportFile> PerformanceAsync(ReportQuery query, CancellationToken ct = default);
     Task<ReportFile> SalaryAsync(ReportQuery query, CancellationToken ct = default);
 }

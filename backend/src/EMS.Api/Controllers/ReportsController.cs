@@ -23,6 +23,10 @@ public class ReportsController(IReportService reportService) : ControllerBase
     public async Task<IActionResult> Attendance([FromQuery] ReportQuery query, CancellationToken ct) =>
         ToFile(await reportService.AttendanceAsync(query, ct));
 
+    [HttpGet("performance")]
+    public async Task<IActionResult> Performance([FromQuery] ReportQuery query, CancellationToken ct) =>
+        ToFile(await reportService.PerformanceAsync(query, ct));
+
     [HttpGet("salary")]
     public async Task<IActionResult> Salary([FromQuery] ReportQuery query, CancellationToken ct) =>
         ToFile(await reportService.SalaryAsync(query, ct));

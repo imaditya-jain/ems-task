@@ -35,6 +35,21 @@ Optional filters: `departmentId`, `status`, and `from` / `to` (attendance only; 
 Every report is built as one format-neutral `ReportDocument` that the PDF (QuestPDF) and Excel (ClosedXML) generators both render.
 QuestPDF is used under its Community licence (free for individuals and companies under USD 1M annual revenue).
 
+## Analytics and performance
+
+| Area | Endpoint(s) |
+| ---- | ----------- |
+| Dashboard cards | `GET /api/v1/analytics/overview` |
+| Hiring trend | `GET /api/v1/analytics/hiring-trend?months=12` |
+| Department growth | `GET /api/v1/analytics/department-growth?months=12` |
+| Attendance patterns | `GET /api/v1/analytics/attendance-patterns?from&to&departmentId` |
+| Performance reviews (CRUD) | `/api/v1/performance` |
+| Performance metrics | `GET /api/v1/performance/metrics?year&quarter&departmentId` |
+| Performance export (PDF/Excel) | `GET /api/v1/reports/performance?format=pdf|excel` |
+
+A review scores Quality, Productivity and Teamwork from 1 to 5. The overall rating is their average, and there is one review per employee per quarter.
+Headcount history is derived from joining dates (leavers are marked Inactive rather than deleted).
+
 ## Prerequisites
 
 - .NET SDK 10

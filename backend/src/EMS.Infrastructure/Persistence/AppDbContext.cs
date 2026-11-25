@@ -11,6 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Attendance> Attendances => Set<Attendance>();
+    public DbSet<PerformanceReview> PerformanceReviews => Set<PerformanceReview>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

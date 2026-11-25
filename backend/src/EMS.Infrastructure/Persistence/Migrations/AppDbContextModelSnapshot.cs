@@ -165,6 +165,50 @@ namespace EMS.Infrastructure.Persistence.Migrations
                     b.ToTable("employees", (string)null);
                 });
 
+            modelBuilder.Entity("EMS.Domain.Entities.PerformanceReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comments")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductivityScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QualityScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quarter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamworkScore")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Year", "Quarter");
+
+                    b.HasIndex("EmployeeId", "Year", "Quarter")
+                        .IsUnique();
+
+                    b.ToTable("performance_reviews", (string)null);
+                });
+
             modelBuilder.Entity("EMS.Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -234,9 +278,22 @@ namespace EMS.Infrastructure.Persistence.Migrations
                     b.Navigation("Department");
                 });
 
+            modelBuilder.Entity("EMS.Domain.Entities.PerformanceReview", b =>
+                {
+                    b.HasOne("EMS.Domain.Entities.Employee", "Employee")
+                        .WithMany("PerformanceReviews")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("EMS.Domain.Entities.Employee", b =>
                 {
                     b.Navigation("Attendances");
+
+                    b.Navigation("PerformanceReviews");
                 });
 #pragma warning restore 612, 618
         }
