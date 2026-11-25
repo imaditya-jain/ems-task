@@ -113,8 +113,11 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 
-    /// <summary>Brute-force protection for the login endpoint: 5 attempts per minute per IP.</summary>
-    public static IServiceCollection AddLoginRateLimiter(this IServiceCollection services)
+    /// <summary>
+    /// Brute-force protection for the login endpoint: <paramref name="permitLimit"/> attempts per minute per IP
+    /// (5 by default; configurable via RateLimiting:LoginPermitLimit so automated test runs can raise it).
+    /// </summary>
+    public static IServiceCollection AddLoginRateLimiter(this IServiceCollection services, int permitLimit)
     {
         services.AddRateLimiter(options =>
         {
@@ -132,7 +135,7 @@ public static partial class ServiceCollectionExtensions
                     httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                     _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 5,
+                        PermitLimit = permitLimit,
                         Window = TimeSpan.FromMinutes(1),
                         QueueLimit = 0
                     }));
