@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { IoArrowBack, IoCreateOutline } from 'react-icons/io5'
+import AttendanceHistory from '@/components/attendance/AttendanceHistory'
 import Spinner from '@/components/common/Spinner'
 import StatusBadge from '@/components/common/StatusBadge'
 import { fetchEmployeeByIdHandler } from '@/lib/features/employee.feature'
@@ -71,6 +72,8 @@ const EmployeeDetailPage = () => {
           </dl>
         </div>
       )}
+
+      {employee && <AttendanceHistory employeeId={employee.id} />}
     </section>
   )
 }

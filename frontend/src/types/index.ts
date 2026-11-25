@@ -55,3 +55,36 @@ export interface Paged<T> {
   totalCount: number
   totalPages: number
 }
+
+export type AttendanceStatus = 'Present' | 'Absent' | 'Late' | 'HalfDay' | 'Leave'
+
+export interface DailyAttendanceRow {
+  employeeId: number
+  employeeCode: string
+  fullName: string
+  departmentName: string
+  /** null = not marked yet */
+  status: AttendanceStatus | null
+  notes: string | null
+}
+
+export interface AttendanceRecord {
+  date: string
+  status: AttendanceStatus
+  notes: string | null
+}
+
+export interface AttendanceSummary {
+  present: number
+  absent: number
+  late: number
+  halfDay: number
+  leave: number
+  total: number
+}
+
+export interface MonthlyAttendance {
+  month: string
+  records: AttendanceRecord[]
+  summary: AttendanceSummary
+}

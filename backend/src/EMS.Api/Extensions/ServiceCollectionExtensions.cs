@@ -30,7 +30,13 @@ public static partial class ServiceCollectionExtensions
             options.InvalidModelStateResponseFactory = context =>
             {
                 // Keys like "Employees[2].Email" come from bulk imports; turn them into "Row 3: ..." messages.
-                var errors = context.ModelState
+                var entries = context.ModelState.Where(e => e.Value!.Errors.Count > 0).ToList();
+
+                // When the body cannot be parsed MVC also adds a generic "request field is required" entry; drop it
+                // if there is a more specific message.
+                if (entries.Count > 1) entries.RemoveAll(e => e.Key is "" or "request");
+
+                var errors = entries
                     .SelectMany(entry => entry.Value!.Errors.Select(e => FormatError(entry.Key, e.ErrorMessage)))
                     .Where(message => !string.IsNullOrWhiteSpace(message))
                     .Distinct()
@@ -46,6 +52,11 @@ public static partial class ServiceCollectionExtensions
 
     private static string FormatError(string key, string message)
     {
+        // Raw System.Text.Json messages ("The JSON value could not be converted to ...") mean the client sent a
+        // value of the wrong type or an unknown enum name.
+        if (message.StartsWith("The JSON value could not be converted", StringComparison.Ordinal))
+            message = $"Invalid value for '{key.Split('.').Last().TrimStart('$')}'.";
+
         var match = RowIndexPattern().Match(key);
         return match.Success ? $"Row {int.Parse(match.Groups[1].Value) + 1}: {message}" : message;
     }
