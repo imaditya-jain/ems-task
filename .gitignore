@@ -1,0 +1,26 @@
+# Interview documents - never push
+docs/
+
+# Secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+secrets.json
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+TestResults/
+*.log
+
+# Node
+node_modules/
+dist/
+
+# Tooling / OS
+.claude/
+.idea/
+.DS_Store
