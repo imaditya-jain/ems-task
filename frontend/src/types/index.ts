@@ -16,3 +16,10 @@ export interface RejectError {
   success: boolean
   error: string
 }
+
+export interface Department {
+  id: number
+  name: string
+  description: string | null
+  createdAt: string
+}

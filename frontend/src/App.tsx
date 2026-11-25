@@ -8,6 +8,7 @@ import PublicRoute from '@/components/auth/PublicRoute'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import LoginPage from '@/pages/LoginPage'
 import DashboardPage from '@/pages/DashboardPage'
+import DepartmentsPage from '@/pages/DepartmentsPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 const App = () => (
@@ -22,6 +23,7 @@ const App = () => (
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/departments" element={<DepartmentsPage />} />
             </Route>
           </Route>
 
