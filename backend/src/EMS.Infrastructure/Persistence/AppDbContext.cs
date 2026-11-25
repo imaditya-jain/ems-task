@@ -9,6 +9,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Department> Departments => Set<Department>();
+    public DbSet<Employee> Employees => Set<Employee>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +22,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         configurationBuilder.Properties<DateTime>()
             .HaveConversion<UtcDateTimeConverter>();
+
+        // The MySQL provider cannot read DATE columns as DateOnly directly, so convert via DateTime.
+        configurationBuilder.Properties<DateOnly>()
+            .HaveConversion<DateOnlyConverter>()
+            .HaveColumnType("date");
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -44,3 +50,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 public class UtcDateTimeConverter() : ValueConverter<DateTime, DateTime>(
     value => value.Kind == DateTimeKind.Utc ? value : value.ToUniversalTime(),
     value => DateTime.SpecifyKind(value, DateTimeKind.Utc));
+
+public class DateOnlyConverter() : ValueConverter<DateOnly, DateTime>(
+    value => value.ToDateTime(TimeOnly.MinValue),
+    value => DateOnly.FromDateTime(value));

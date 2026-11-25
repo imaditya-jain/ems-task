@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { apiRequest } from '@/lib/api'
+import { apiRequest, toRejectError } from '@/lib/api'
 import type { ApiResponse, RejectError, User } from '@/types'
 
 type AuthResponse = ApiResponse<{ user: User }>
@@ -8,11 +8,6 @@ export interface LoginPayload {
   email: string
   password: string
 }
-
-const toRejectError = (error: unknown): RejectError => ({
-  success: false,
-  error: error instanceof Error ? error.message : 'Something went wrong.',
-})
 
 export const loginUserHandler = createAsyncThunk<AuthResponse, LoginPayload, { rejectValue: RejectError }>(
   'auth/login',

@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using EMS.Api.Extensions;
 using EMS.Application.Auth.Settings;
@@ -12,28 +14,44 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace EMS.Api.Extensions;
 
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     public const string LoginRateLimitPolicy = "login";
 
     /// <summary>Controllers whose validation failures use the same { success, error } envelope as every other error.</summary>
     public static IServiceCollection AddApiControllers(this IServiceCollection services)
     {
-        services.AddControllers().ConfigureApiBehaviorOptions(options =>
+        services.AddControllers()
+            .AddJsonOptions(options =>
+                // Enums travel as readable strings ("Female") instead of numbers.
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+            .ConfigureApiBehaviorOptions(options =>
         {
             options.InvalidModelStateResponseFactory = context =>
             {
-                var error = context.ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m)) ?? "Invalid request.";
+                // Keys like "Employees[2].Email" come from bulk imports; turn them into "Row 3: ..." messages.
+                var errors = context.ModelState
+                    .SelectMany(entry => entry.Value!.Errors.Select(e => FormatError(entry.Key, e.ErrorMessage)))
+                    .Where(message => !string.IsNullOrWhiteSpace(message))
+                    .Distinct()
+                    .ToList();
 
-                return new BadRequestObjectResult(ApiResponse.Fail(error));
+                var first = errors.FirstOrDefault() ?? "Invalid request.";
+                return new BadRequestObjectResult(ApiResponse.Fail(first, errors.Count > 1 ? errors : null));
             };
         });
 
         return services;
     }
+
+    private static string FormatError(string key, string message)
+    {
+        var match = RowIndexPattern().Match(key);
+        return match.Success ? $"Row {int.Parse(match.Groups[1].Value) + 1}: {message}" : message;
+    }
+
+    [GeneratedRegex(@"\[(\d+)\]")]
+    private static partial Regex RowIndexPattern();
 
     /// <summary>JWT bearer auth that reads the access token from the httpOnly cookie instead of the Authorization header.</summary>
     public static IServiceCollection AddCookieJwtAuthentication(this IServiceCollection services)

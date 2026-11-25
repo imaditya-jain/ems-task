@@ -1,6 +1,7 @@
 using EMS.Application.Auth.Interfaces;
 using EMS.Application.Auth.Settings;
 using EMS.Application.Departments.Interfaces;
+using EMS.Application.Employees.Interfaces;
 using EMS.Infrastructure.Auth;
 using EMS.Infrastructure.Persistence;
 using EMS.Infrastructure.Repositories;
@@ -29,6 +30,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
         services.AddSingleton<ITokenService, TokenService>();
 
