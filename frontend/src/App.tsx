@@ -13,6 +13,7 @@ import EmployeesPage from '@/pages/EmployeesPage'
 import EmployeeFormPage from '@/pages/EmployeeFormPage'
 import EmployeeDetailPage from '@/pages/EmployeeDetailPage'
 import AttendancePage from '@/pages/AttendancePage'
+import ReportsPage from '@/pages/ReportsPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 const App = () => (
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/employees/:id" element={<EmployeeDetailPage />} />
               <Route path="/employees/:id/edit" element={<EmployeeFormPage />} />
               <Route path="/attendance" element={<AttendancePage />} />
+              <Route path="/reports" element={<ReportsPage />} />
               <Route path="/departments" element={<DepartmentsPage />} />
             </Route>
           </Route>

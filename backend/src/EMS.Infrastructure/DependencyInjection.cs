@@ -1,10 +1,12 @@
 using EMS.Application.Auth.Interfaces;
 using EMS.Application.Attendance.Interfaces;
+using EMS.Application.Reports.Interfaces;
 using EMS.Application.Auth.Settings;
 using EMS.Application.Departments.Interfaces;
 using EMS.Application.Employees.Interfaces;
 using EMS.Infrastructure.Auth;
 using EMS.Infrastructure.Persistence;
+using EMS.Infrastructure.Reports;
 using EMS.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +18,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        // QuestPDF Community licence: free for individuals and companies under USD 1M annual revenue.
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is missing.");
 
@@ -33,6 +38,9 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
+        services.AddSingleton<IPdfReportGenerator, PdfReportGenerator>();
+        services.AddSingleton<IExcelReportGenerator, ExcelReportGenerator>();
         services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
         services.AddSingleton<ITokenService, TokenService>();
 

@@ -28,6 +28,13 @@ frontend/
     types/  utils/
 ```
 
+## Reports
+
+`GET /api/v1/reports/{employee-directory|departments|attendance|salary}?format=pdf|excel` streams a file.
+Optional filters: `departmentId`, `status`, and `from` / `to` (attendance only; defaults to the current month).
+Every report is built as one format-neutral `ReportDocument` that the PDF (QuestPDF) and Excel (ClosedXML) generators both render.
+QuestPDF is used under its Community licence (free for individuals and companies under USD 1M annual revenue).
+
 ## Prerequisites
 
 - .NET SDK 10
